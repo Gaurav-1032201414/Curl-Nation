@@ -185,12 +185,28 @@ class ProductCategoryIntersection(models.Model):
         return self.product_id
     
 
-
 class Inventory(models.Model):
     source_code = models.CharField(max_length=255)
-    product_id = models.CharField(max_length=255)
-    status = models.IntegerField()
-    quantity = models.IntegerField()
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='inventories')
+    status = models.BooleanField(default=False)
+    quantity = models.CharField(max_length=255)
 
     def __str__(self):
         return f"{self.product_id} - {self.source_code}"
+    
+
+class StoreCode(models.Model):
+    store_code_id = models.CharField(max_length=255)
+    store_view_code = models.CharField(max_length=255)
+    
+    def __str__(self):
+        return self.store_code_id
+
+
+class StoreCodeProduct(models.Model):
+    store_code_id = models.ForeignKey(StoreCode, on_delete=models.CASCADE, related_name='store_code_products')
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='store_code_products')
+
+    def __str__(self):
+        return f"{self.store_code_id} - {self.product_id}"
+    

@@ -95,13 +95,28 @@ WSGI_APPLICATION = 'curlnation.wsgi.application'
 #     }
 # }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd3eke1ul6shd79',
+        'USER': 'utpl21rqpbenn',
+        'PASSWORD': 'pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57',
+        'HOST': 'ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',
+        'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
+}
+
+
 # DATABASES = {
 #     'default': dj_database_url.config(default=f"postgres://postgres:1601@localhost:5432/postgres"),
 # }
 
-DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
-}
+# DATABASES = {
+#     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

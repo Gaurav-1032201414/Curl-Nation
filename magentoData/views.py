@@ -287,20 +287,18 @@ def StockSource(request):
             status = request.POST.get('status')
             quantity = request.POST.get('quantity')
 
-            # Prepare the data for upsert
             data = {
                 'source_code': [source_code],
                 'product_id': [product_id],
-                'status': [bool(status)],  # Converting status to boolean
+                'status': [bool(status)],
                 'quantity': [quantity]
             }
             df = pd.DataFrame(data)
 
-            # Create a SQLAlchemy engine using the database URL from dj_database_url
             db_url = dj_database_url.config(conn_max_age=600, ssl_require=True)
+            
             engine = create_engine(db_url)
 
-            # Use pangres to upsert the data
             pangres.upsert(
                 con=engine,
                 df=df,

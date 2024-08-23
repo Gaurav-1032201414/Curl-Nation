@@ -302,9 +302,6 @@ def StockSource(request):
                 conn_max_age=600,
                 ssl_require=True
             )
-
-            if isinstance(db_url, dict):
-                db_url = dj_database_url.make_url(db_url)
             
             engine = create_engine(db_url)
 

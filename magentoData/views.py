@@ -300,9 +300,9 @@ def StockSource(request):
             }
             df = pd.DataFrame(data)
             
-            if df.index.names == [None]:
-                df.index.names = ['index']
-            
+            df = df.reset_index(drop=True)
+            df = df[['inventory_id', 'source_code', 'product_id', 'status', 'quantity']]
+
             engine = create_engine(DATABASE_URL)
 
             pangres.upsert(

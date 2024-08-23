@@ -14,6 +14,7 @@ from django.utils.dateparse import parse_datetime
 from django.db import connection
 from django.conf import settings
 from sqlalchemy import create_engine
+from sqlalchemy.engine.url import URL
 import dj_database_url
 
 DATABASE_URL = ("postgresql://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79?sslmode=require")
@@ -205,6 +206,8 @@ def ProductView(request):
             data = json.loads(request.body)
             df = pd.DataFrame(data, index=[0])
             df.rename(columns={"sku": "product_id"}, inplace=True)
+            
+            engine = create_engine(DATABASE_URL)
 
             product_columns = [
                 'product_id', 'attribute_set_code', 'product_type', 'product_websites',
@@ -227,7 +230,7 @@ def ProductView(request):
             # Upsert Product Data
             product_df = df[product_columns].drop_duplicates(subset=['product_id'])
             product_df.set_index('product_id', inplace=True)
-            pangres.upsert(con=connection, df=product_df, table_name='magentoData_product', if_row_exists='update')
+            pangres.upsert(con=engine, df=product_df, table_name='magentoData_product', if_row_exists='update')
 
             category_column = 'categories'
             Categories = df[category_column].dropna().tolist()
@@ -242,7 +245,7 @@ def ProductView(request):
             category_df['category_id'] = range(1, len(category_df) + 1)
 
             category_df.set_index('category_id', inplace=True)
-            pangres.upsert(con=connection, df=category_df, table_name='magentoData_category', if_row_exists='update')
+            pangres.upsert(con=engine, df=category_df, table_name='magentoData_category', if_row_exists='update')
 
             intersection_data = []
             for _, row in category_df.iterrows():
@@ -250,7 +253,7 @@ def ProductView(request):
                     intersection_data.append({'product_id': product_id, 'category_id': row.name, 'category': row['Category Type']})
 
             intersection_df = pd.DataFrame(intersection_data).drop_duplicates()
-            pangres.upsert(con=connection, df=intersection_df, table_name='magentoData_productcategoryintersection', if_row_exists='update')
+            pangres.upsert(con=engine, df=intersection_df, table_name='magentoData_productcategoryintersection', if_row_exists='update')
 
             # Store code handling
             store_codes = df['store_view_code'].dropna().unique()
@@ -259,7 +262,7 @@ def ProductView(request):
 
             # Upsert Store Code Data
             store_code_df.set_index('store_code_id', inplace=True)
-            pangres.upsert(con=connection, df=store_code_df, table_name='magentoData_storecode', if_row_exists='update')
+            pangres.upsert(con=engine, df=store_code_df, table_name='magentoData_storecode', if_row_exists='update')
 
             # Prepare product_storecode data
             product_storecode_data = []
@@ -269,7 +272,7 @@ def ProductView(request):
                     product_storecode_data.append({'product_id': product_id, 'store_code_id': store_code_id})
 
             product_storecode_df = pd.DataFrame(product_storecode_data, index=[0]).drop_duplicates()
-            pangres.upsert(con=connection, df=product_storecode_df, table_name='magentoData_storecodeproduct', if_row_exists='update')
+            pangres.upsert(con=engine, df=product_storecode_df, table_name='magentoData_storecodeproduct', if_row_exists='update')
 
             return JsonResponse({"message": "Data upserted successfully"}, status=200)
 

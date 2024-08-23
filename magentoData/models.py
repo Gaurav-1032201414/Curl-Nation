@@ -10,7 +10,7 @@ class Customers(models.Model):
     zip = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    customer_since = models.DateTimeField()
+    customer_since = models.DateTimeField(null=True, blank=True)
     web_site = models.CharField(max_length=100)
     confirmed_email = models.CharField(max_length=225)
     account_created_in = models.CharField(max_length=100)

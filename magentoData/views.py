@@ -76,16 +76,16 @@ def CustomersView(request):
                 'Email': 'email',
                 'Group': 'group',
                 'Phone': 'phone',
-                'Zip': 'zip',
+                'ZIP': 'zip',
                 'Country': 'country',
                 'State/Province': 'state',
                 'Customer Since': 'customer_since',
                 'Web Site': 'web_site',
-                'Confirmed Email': 'confirmed_email',
-                'Account Created In': 'account_created_in',
+                'Confirmed email': 'confirmed_email',
+                'Account Created in': 'account_created_in',
                 'Billing Address': 'billing_address',
                 'Shipping Address': 'shipping_address',
-                'Date Of Birth': 'date_of_birth',
+                'Date of Birth': 'date_of_birth',
                 'Tax VAT Number': 'tax_vat_number',
                 'Gender': 'gender',
                 'Street Address': 'street_address',
@@ -93,14 +93,19 @@ def CustomersView(request):
                 'Fax': 'fax',
                 'VAT Number': 'vat_number',
                 'Company': 'company',
-                'Billing First Name': 'billing_firstname',
-                'Billing Last Name': 'billing_lastname',
+                'Billing Firstname': 'billing_firstname',
+                'Billing Lastname': 'billing_lastname',
                 'Account Lock': 'account_lock',
                 'Mailchimp': 'mailchimp',
                 'Tier': 'tier',
                 'Rewards Balance': 'rewards_balance',
                 # Add more column mappings here as needed
             })
+            
+            df.set_index('customer_id', inplace = True)
+            
+            if 'customer_since' not in df.columns or df['customer_since'].isnull().all():
+                df['customer_since'] = pd.Timestamp.now()
 
             # Upsert the data into the Customers table
             engine = create_engine(DATABASE_URL)

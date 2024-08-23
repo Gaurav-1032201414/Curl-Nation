@@ -82,7 +82,7 @@ class OrderProductIntersection(models.Model):
 
 
 class Product(models.Model):
-    product_id = models.CharField(max_length=255)
+    product_id = models.CharField(max_length=255, primary_key=True)
     store_view_code = models.CharField(max_length=255, null=True, blank=True)
     attribute_set_code = models.CharField(max_length=255)
     product_type = models.CharField(max_length=255)
@@ -161,7 +161,7 @@ class Product(models.Model):
     
 
 class Category(models.Model):
-    category_id = models.CharField(max_length=255)
+    category_id = models.CharField(max_length=255, primary_key=True)
     gender_type = models.CharField(max_length=100)
     category_type = models.CharField(max_length=100)
     sub_category_type = models.CharField(max_length=100)
@@ -186,7 +186,7 @@ class ProductCategoryIntersection(models.Model):
     
 
 class Inventory(models.Model):
-    inventory_id = models.CharField(max_length=255)
+    inventory_id = models.CharField(max_length=255, primary_key=True)
     source_code = models.CharField(max_length=255)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='inventories')
     status = models.BooleanField(default=False)
@@ -197,7 +197,7 @@ class Inventory(models.Model):
     
 
 class StoreCode(models.Model):
-    store_code_id = models.CharField(max_length=255)
+    store_code_id = models.CharField(max_length=255, primary_key=True)
     store_view_code = models.CharField(max_length=255)
     
     def __str__(self):

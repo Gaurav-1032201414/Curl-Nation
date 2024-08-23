@@ -69,17 +69,42 @@ def CustomersView(request):
                 return JsonResponse({'error': 'Unsupported content type'}, status=415)
 
             # DataFrame processing
-            df['customer_since'] = df['Customer Since'].apply(parse_datetime)
+            df['Customer Since'] = df['Customer Since'].apply(parse_datetime)
             df = df.rename(columns={
                 'ID': 'customer_id',
                 'Name': 'name',
                 'Email': 'email',
+                'Group': 'group',
+                'Phone': 'phone',
+                'Zip': 'zip',
+                'Country': 'country',
+                'State/Province': 'state',
+                'Customer Since': 'customer_since',
+                'Web Site': 'web_site',
+                'Confirmed Email': 'confirmed_email',
+                'Account Created In': 'account_created_in',
+                'Billing Address': 'billing_address',
+                'Shipping Address': 'shipping_address',
+                'Date Of Birth': 'date_of_birth',
+                'Tax VAT Number': 'tax_vat_number',
+                'Gender': 'gender',
+                'Street Address': 'street_address',
+                'City': 'city',
+                'Fax': 'fax',
+                'VAT Number': 'vat_number',
+                'Company': 'company',
+                'Billing First Name': 'billing_firstname',
+                'Billing Last Name': 'billing_lastname',
+                'Account Lock': 'account_lock',
+                'Mailchimp': 'mailchimp',
+                'Tier': 'tier',
+                'Rewards Balance': 'rewards_balance',
                 # Add more column mappings here as needed
             })
 
             # Upsert the data into the Customers table
-            with connection.cursor() as cursor:
-                pangres.upsert(df=df, con=cursor.connection, table_name='yourapp_customers', if_row_exists='update', create_table=False)
+            engine = create_engine(DATABASE_URL)
+            pangres.upsert(df=df, con=engine, table_name='magentoData_customers', if_row_exists='update', create_table=False)
             
             num_rows = len(df)
             return JsonResponse({'message': f'Data processed and saved successfully, {num_rows} rows found.'}, status=200)

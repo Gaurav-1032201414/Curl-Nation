@@ -288,8 +288,11 @@ def StockSource(request):
             product_id = request.POST.get('sku')
             status = request.POST.get('status')
             quantity = request.POST.get('quantity')
+            
+            inventory_id = f"I{source_code}_{product_id}"
 
             data = {
+                'inventory_id': [inventory_id],
                 'source_code': [source_code],
                 'product_id': [product_id],
                 'status': [bool(status)],
@@ -297,13 +300,6 @@ def StockSource(request):
             }
             df = pd.DataFrame(data)
             
-            # db_url = dj_database_url.config('postgres://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79') # , conn_max_age=600, ssl_require=True
-            
-            # db_url = dj_database_url.parse(
-            #     'postgres://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79',
-            #     conn_max_age=600,
-            #     ssl_require=True
-            # )
             
             engine = create_engine(DATABASE_URL)
 

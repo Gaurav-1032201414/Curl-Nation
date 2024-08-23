@@ -186,6 +186,7 @@ class ProductCategoryIntersection(models.Model):
     
 
 class Inventory(models.Model):
+    inventory_id = models.CharField(max_length=255)
     source_code = models.CharField(max_length=255)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='inventories')
     status = models.BooleanField(default=False)

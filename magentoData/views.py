@@ -300,6 +300,8 @@ def StockSource(request):
             }
             df = pd.DataFrame(data)
             
+            if df.index.names == [None]:
+                df.index.names = ['index']
             
             engine = create_engine(DATABASE_URL)
 

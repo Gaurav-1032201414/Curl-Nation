@@ -203,7 +203,7 @@ def ProductView(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            df = pd.DataFrame(data)
+            df = pd.DataFrame(data, index=[0])
             df.rename(columns={"sku": "product_id"}, inplace=True)
 
             product_columns = [
@@ -236,7 +236,7 @@ def ProductView(request):
             split_categories = [category.split('/', 3) for category in categories_list]
             
             # Create category DataFrame
-            category_df = pd.DataFrame(split_categories, columns=['Main Type', 'Category Type', 'Sub-Category Type', 'Additional Info'])
+            category_df = pd.DataFrame(split_categories, columns=['Main Type', 'Category Type', 'Sub-Category Type', 'Additional Info'], index=[0])
             category_df.fillna('', inplace=True)
 
             category_df['category_id'] = range(1, len(category_df) + 1)
@@ -254,7 +254,7 @@ def ProductView(request):
 
             # Store code handling
             store_codes = df['store_view_code'].dropna().unique()
-            store_code_df = pd.DataFrame(store_codes, columns=['store_code_view'])
+            store_code_df = pd.DataFrame(store_codes, columns=['store_code_view'], index=[0])
             store_code_df['store_code_id'] = range(1, len(store_code_df) + 1)
 
             # Upsert Store Code Data
@@ -268,7 +268,7 @@ def ProductView(request):
                     store_code_id = store_code_df[store_code_df['store_code_view'] == store_code].index[0]
                     product_storecode_data.append({'product_id': product_id, 'store_code_id': store_code_id})
 
-            product_storecode_df = pd.DataFrame(product_storecode_data).drop_duplicates()
+            product_storecode_df = pd.DataFrame(product_storecode_data, index=[0]).drop_duplicates()
             pangres.upsert(con=connection, df=product_storecode_df, table_name='magentoData_storecodeproduct', if_row_exists='update')
 
             return JsonResponse({"message": "Data upserted successfully"}, status=200)
@@ -299,18 +299,20 @@ def StockSource(request):
                 'quantity': [quantity]
             }
             df = pd.DataFrame(data)
-            
             df = df.reset_index(drop=True)
             df = df[['inventory_id', 'source_code', 'product_id', 'status', 'quantity']]
 
             engine = create_engine(DATABASE_URL)
+            
+            records = df.to_dict(orient='records')
 
-            pangres.upsert(
-                con=engine,
-                df=df,
-                table_name='magentoData_inventory',
-                if_row_exists='update'
-            )
+            for record in records:
+                pangres.upsert(
+                    con=engine,
+                    df=pd.DataFrame([record]),
+                    table_name='magentoData_inventory',
+                    if_row_exists='update',
+                )
 
             return JsonResponse({"message": "Inventory created or updated successfully."}, status=201)
 

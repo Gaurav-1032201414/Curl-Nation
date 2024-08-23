@@ -295,7 +295,16 @@ def StockSource(request):
             }
             df = pd.DataFrame(data)
             
-            db_url = dj_database_url.config(default=f"postgres://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79", conn_max_age=600, ssl_require=True)
+            # db_url = dj_database_url.config('postgres://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79') # , conn_max_age=600, ssl_require=True
+            
+            db_url = dj_database_url.parse(
+                'postgres://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79',
+                conn_max_age=600,
+                ssl_require=True
+            )
+
+            if isinstance(db_url, dict):
+                db_url = dj_database_url.make_url(db_url)
             
             engine = create_engine(db_url)
 

@@ -179,11 +179,11 @@ def OrdersView(request):
             
             # Upsert Orders
             with connection.cursor() as cursor:
-                pangres.upsert(df=order_df, con=cursor.connection, table_name='yourapp_orders', if_row_exists='update', create_table=False)
+                pangres.upsert(df=order_df, con=cursor.connection, table_name='magentoData_orders', if_row_exists='update', create_table=False)
 
             # Upsert Order Products
             with connection.cursor() as cursor:
-                pangres.upsert(df=order_product_df, con=cursor.connection, table_name='yourapp_orderproductintersection', if_row_exists='update', create_table=False)
+                pangres.upsert(df=order_product_df, con=cursor.connection, table_name='magentoData_orderproductintersection', if_row_exists='update', create_table=False)
             
             num_rows = len(df)
             return JsonResponse({'message': f'Orders processed and saved successfully, {num_rows} rows found.'}, status=200)

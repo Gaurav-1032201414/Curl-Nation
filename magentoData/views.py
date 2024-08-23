@@ -16,6 +16,8 @@ from django.conf import settings
 from sqlalchemy import create_engine
 import dj_database_url
 
+DATABASE_URL = ("postgresql://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79?sslmode=require")
+
 
 def sanitize_multiline_text(data):
     if isinstance(data, dict):
@@ -297,13 +299,13 @@ def StockSource(request):
             
             # db_url = dj_database_url.config('postgres://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79') # , conn_max_age=600, ssl_require=True
             
-            db_url = dj_database_url.parse(
-                'postgres://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79',
-                conn_max_age=600,
-                ssl_require=True
-            )
+            # db_url = dj_database_url.parse(
+            #     'postgres://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79',
+            #     conn_max_age=600,
+            #     ssl_require=True
+            # )
             
-            engine = create_engine(db_url)
+            engine = create_engine(DATABASE_URL)
 
             pangres.upsert(
                 con=engine,

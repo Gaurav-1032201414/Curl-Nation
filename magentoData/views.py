@@ -17,7 +17,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 import dj_database_url
 
-DATABASE_URL = ("postgresql://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79?sslmode=require")
+DATABASE_URL = "postgres://u4nngd66js0305:p90781a79b839c61737c07944104e13be1b802de28342499ed0cc39fd3eeb1fb9@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3k968ks4p4b6u"
 
 
 def sanitize_multiline_text(data):
@@ -234,9 +234,9 @@ def ProductView(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            df = pd.DataFrame(data, index=[0])
+            df = pd.DataFrame(data)
             df.rename(columns={"sku": "product_id"}, inplace=True)
-            
+
             engine = create_engine(DATABASE_URL)
 
             product_columns = [
@@ -260,48 +260,48 @@ def ProductView(request):
             # Upsert Product Data
             product_df = df[product_columns].drop_duplicates(subset=['product_id'])
             product_df.set_index('product_id', inplace=True)
-            pangres.upsert(con=engine, df=product_df, table_name='magentoData_product', if_row_exists='update')
+            pangres.upsert(con=engine, df=product_df, table_name='magentoData_product', if_row_exists='update', index_col='product_id')
 
+            # Category Handling
             category_column = 'categories'
             Categories = df[category_column].dropna().tolist()
-            category_list = list(set([item for sub in Categories for item in str(sub).split(',')]))
+            category_list = list(set([item for sublist in Categories for item in str(sublist).split(',')]))
             categories_list = list(set([category.replace("Default Category/Categories/", "") for category in category_list]))
             split_categories = [category.split('/', 3) for category in categories_list]
-            
-            # Create category DataFrame
-            category_df = pd.DataFrame(split_categories, columns=['Main Type', 'Category Type', 'Sub-Category Type', 'Additional Info'], index=[0])
-            category_df.fillna('', inplace=True)
 
+            # Create category DataFrame
+            category_df = pd.DataFrame(split_categories, columns=['Main Type', 'Category Type', 'Sub-Category Type', 'Additional Info'])
+            category_df.fillna('', inplace=True)
             category_df['category_id'] = range(1, len(category_df) + 1)
 
-            category_df.set_index('category_id', inplace=True)
-            pangres.upsert(con=engine, df=category_df, table_name='magentoData_category', if_row_exists='update')
+            pangres.upsert(con=engine, df=category_df, table_name='magentoData_category', if_row_exists='update', index_col='category_id')
 
+            # Intersection Handling
             intersection_data = []
             for _, row in category_df.iterrows():
-                for product_id in product_df.index:
-                    intersection_data.append({'product_id': product_id, 'category_id': row.name, 'category': row['Category Type']})
+                for product_id in product_df['product_id']:
+                    intersection_data.append({'product_id': product_id, 'category_id': row['category_id'], 'category': row['Category Type']})
 
             intersection_df = pd.DataFrame(intersection_data).drop_duplicates()
             pangres.upsert(con=engine, df=intersection_df, table_name='magentoData_productcategoryintersection', if_row_exists='update')
 
             # Store code handling
             store_codes = df['store_view_code'].dropna().unique()
-            store_code_df = pd.DataFrame(store_codes, columns=['store_code_view'], index=[0])
+            store_code_df = pd.DataFrame({'store_code_view': list(store_codes)})
             store_code_df['store_code_id'] = range(1, len(store_code_df) + 1)
+            store_code_df.set_index('store_code_id', inplace=True)
 
             # Upsert Store Code Data
-            store_code_df.set_index('store_code_id', inplace=True)
-            pangres.upsert(con=engine, df=store_code_df, table_name='magentoData_storecode', if_row_exists='update')
+            pangres.upsert(con=engine, df=store_code_df, table_name='magentoData_storecode', if_row_exists='update', index_col='store_code_id')
 
             # Prepare product_storecode data
             product_storecode_data = []
-            for product_id in product_df.index:
+            for product_id in product_df['product_id']:
                 for store_code in store_codes:
                     store_code_id = store_code_df[store_code_df['store_code_view'] == store_code].index[0]
                     product_storecode_data.append({'product_id': product_id, 'store_code_id': store_code_id})
 
-            product_storecode_df = pd.DataFrame(product_storecode_data, index=[0]).drop_duplicates()
+            product_storecode_df = pd.DataFrame(product_storecode_data).drop_duplicates()
             pangres.upsert(con=engine, df=product_storecode_df, table_name='magentoData_storecodeproduct', if_row_exists='update')
 
             return JsonResponse({"message": "Data upserted successfully"}, status=200)
@@ -313,39 +313,115 @@ def ProductView(request):
         return JsonResponse({"error": "Invalid HTTP method"}, status=405)
 
 
+# @csrf_exempt
+# def StockSource(request):
+#     if request.method == "POST":
+#         try:
+#             print(f"Raw request body: {request.body.decode('utf-8')}")
+
+#             if request.content_type == 'application/json':
+#                 payload = json.loads(request.body.decode('utf-8'))
+#                 sanitized_payload = sanitize_multiline_text(payload)
+                
+#                 print(f"Sanitized Payload: {sanitized_payload}")
+                
+#                 csv_data = sanitized_payload.get('csv_data')
+#                 if csv_data:
+#                     csv_io = StringIO(csv_data)
+#                     df = pd.read_csv(csv_io)
+#                     print(f"DataFrame from CSV: {df}")
+#                 else:
+#                     df = pd.json_normalize(sanitized_payload)
+#                     print(f"DataFrame from JSON: {df}")
+            
+#             elif request.content_type == 'text/csv':
+#                 csv_data = request.body.decode('utf-8')
+#                 csv_io = StringIO(csv_data)
+#                 df = pd.read_csv(csv_io)
+#                 print(f"DataFrame from CSV: {df}")
+            
+#             else:
+#                 return JsonResponse({'error': 'Unsupported content type'}, status=415)
+
+
+#             print(df)
+            
+#             df = df.rename(columns={
+#                 'Source Code': 'source_code',
+#                 'Sku': 'sku',
+#                 'Status': 'status',
+#                 'Quantity': 'quantity',
+#                 # Add more column mappings here as needed
+#             })
+            
+#             df.rename(columns={"sku": "product_id"}, inplace=True)
+#             df["inventory_id"] = "I" + df["source_code"] + df["product_id"]
+#             df["status"] = df["status"].astype(bool)
+            
+#             df.set_index('product_id', inplace = True)
+            
+#             print(f"DataFrame: {df.head}")
+
+#             engine = create_engine(DATABASE_URL)
+#             pangres.upsert(df=df, con=engine, table_name='magentoData_inventory', if_row_exists='update', create_table=False)
+            
+
+#             return JsonResponse({"message": "Inventory created or updated successfully."}, status=201)
+
+#         except Exception as e:
+#             return JsonResponse({"error": str(e)}, status=500)
+
+#     else:
+#         return JsonResponse({"error": "Invalid HTTP method."}, status=405)
+
+
 @csrf_exempt
 def StockSource(request):
     if request.method == "POST":
         try:
-            source_code = request.POST.get('source_code')
-            product_id = request.POST.get('sku')
-            status = request.POST.get('status')
-            quantity = request.POST.get('quantity')
-            
-            inventory_id = f"I{source_code}_{product_id}"
+            print(f"Raw request body: {request.body.decode('utf-8')}")
 
-            data = {
-                'inventory_id': [inventory_id],
-                'source_code': [source_code],
-                'product_id': [product_id],
-                'status': [bool(status)],
-                'quantity': [quantity]
-            }
-            df = pd.DataFrame(data)
-            df = df.reset_index(drop=True)
-            df = df[['inventory_id', 'source_code', 'product_id', 'status', 'quantity']]
+            if request.content_type == 'application/json':
+                payload = json.loads(request.body.decode('utf-8'))
+                sanitized_payload = sanitize_multiline_text(payload)
+                
+                print(f"Sanitized Payload: {sanitized_payload}")
+                
+                csv_data = sanitized_payload.get('csv_data')
+                if csv_data:
+                    csv_io = StringIO(csv_data)
+                    df = pd.read_csv(csv_io)
+                    print(f"DataFrame from CSV: {df}")
+                else:
+                    df = pd.json_normalize(sanitized_payload)
+                    print(f"DataFrame from JSON: {df}")
+            
+            elif request.content_type == 'text/csv':
+                csv_data = request.body.decode('utf-8')
+                csv_io = StringIO(csv_data)
+                df = pd.read_csv(csv_io)
+                print(f"DataFrame from CSV: {df}")
+            
+            else:
+                return JsonResponse({'error': 'Unsupported content type'}, status=415)
+
+            print(df)
+            
+            df = df.rename(columns={
+                'Source Code': 'source_code',
+                'Sku': 'product_id_id',
+                'Status': 'status',
+                'Quantity': 'quantity',
+            })
+            
+            df["inventory_id"] = "I" + df["source_code"] + df["product_id_id"]
+            df["status"] = df["status"].astype(bool)
+            
+            print(f"DataFrame: {df.head()}")
 
             engine = create_engine(DATABASE_URL)
-            
-            records = df.to_dict(orient='records')
 
-            for record in records:
-                pangres.upsert(
-                    con=engine,
-                    df=pd.DataFrame([record]),
-                    table_name='magentoData_inventory',
-                    if_row_exists='update',
-                )
+            df.to_sql('magentoData_inventory', con=engine, if_exists='append', index=False)
 
             return JsonResponse({"message": "Inventory created or updated successfully."}, status=201)
 

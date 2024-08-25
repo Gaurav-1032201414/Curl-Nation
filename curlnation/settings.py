@@ -98,9 +98,9 @@ WSGI_APPLICATION = 'curlnation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd3eke1ul6shd79',
-        'USER': 'utpl21rqpbenn',
-        'PASSWORD': 'pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57',
+        'NAME': 'd3k968ks4p4b6u',
+        'USER': 'u4nngd66js0305',
+        'PASSWORD': 'p90781a79b839c61737c07944104e13be1b802de28342499ed0cc39fd3eeb1fb9',
         'HOST': 'ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',
         'PORT': '5432',
         'OPTIONS': {
@@ -111,7 +111,7 @@ DATABASES = {
 
 
 # DATABASES = {
-#     'default': dj_database_url.config(default=f"postgres://utpl21rqpbenn:pd5913d12a2e87244ec562dbe5b8d93ce03bbb8fffc159496a053122d71e93a57@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3eke1ul6shd79"),
+#     'default': dj_database_url.config(default="postgres://u4nngd66js0305:p90781a79b839c61737c07944104e13be1b802de28342499ed0cc39fd3eeb1fb9@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3k968ks4p4b6u"),
 # }
 
 # DATABASES = {

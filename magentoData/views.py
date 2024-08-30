@@ -17,8 +17,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 import dj_database_url
 
-DATABASE_URL = "postgres://u4nngd66js0305:p90781a79b839c61737c07944104e13be1b802de28342499ed0cc39fd3eeb1fb9@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3k968ks4p4b6u"
+DATABASE_URL = "postgresql://u4nngd66js0305:p90781a79b839c61737c07944104e13be1b802de28342499ed0cc39fd3eeb1fb9@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3k968ks4p4b6u"
 
+# DATABASE_URL = "postgresql://postgres:1601@localhost:5432/postgres"
 
 def sanitize_multiline_text(data):
     if isinstance(data, dict):

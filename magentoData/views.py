@@ -209,13 +209,15 @@ def OrdersView(request):
             
             engine = create_engine(DATABASE_URL)
             
+            # order_df.reset_index(drop=True, inplace=True)
+            
             # Upsert Orders
             # with connection.cursor() as cursor:
-            pangres.upsert(df=order_df, con=engine, table_name='magentoData_orders', if_row_exists='update', create_table=False)
+            order_df.to_sql('magentoData_orders', con=engine, if_exists='append', index=False)
 
             # Upsert Order Products
             # with connection.cursor() as cursor:
-            pangres.upsert(df=order_product_df, con=engine, table_name='magentoData_orderproductintersection', if_row_exists='update', create_table=False)
+            order_product_df.to_sql('magentoData_orderproductintersection', con=engine, if_exists='append', index=False)
             
             num_rows = len(df)
             return JsonResponse({'message': f'Orders processed and saved successfully, {num_rows} rows found.'}, status=200)

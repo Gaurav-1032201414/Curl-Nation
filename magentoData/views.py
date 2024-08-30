@@ -19,8 +19,6 @@ import dj_database_url
 
 DATABASE_URL = "postgresql://u4nngd66js0305:p90781a79b839c61737c07944104e13be1b802de28342499ed0cc39fd3eeb1fb9@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3k968ks4p4b6u?sslmode=require"
 
-# DATABASE_URL = "postgresql://postgres:1601@localhost:5432/postgres"
-
 def sanitize_multiline_text(data):
     if isinstance(data, dict):
         return {k: sanitize_multiline_text(v) for k, v in data.items()}
@@ -209,13 +207,15 @@ def OrdersView(request):
                 }
             )
             
+            engine = create_engine(DATABASE_URL)
+            
             # Upsert Orders
-            with connection.cursor() as cursor:
-                pangres.upsert(df=order_df, con=cursor.connection, table_name='magentoData_orders', if_row_exists='update', create_table=False)
+            # with connection.cursor() as cursor:
+            pangres.upsert(df=order_df, con=engine, table_name='magentoData_orders', if_row_exists='update', create_table=False)
 
             # Upsert Order Products
-            with connection.cursor() as cursor:
-                pangres.upsert(df=order_product_df, con=cursor.connection, table_name='magentoData_orderproductintersection', if_row_exists='update', create_table=False)
+            # with connection.cursor() as cursor:
+            pangres.upsert(df=order_product_df, con=engine, table_name='magentoData_orderproductintersection', if_row_exists='update', create_table=False)
             
             num_rows = len(df)
             return JsonResponse({'message': f'Orders processed and saved successfully, {num_rows} rows found.'}, status=200)
@@ -312,69 +312,6 @@ def ProductView(request):
 
     else:
         return JsonResponse({"error": "Invalid HTTP method"}, status=405)
-
-
-# @csrf_exempt
-# def StockSource(request):
-#     if request.method == "POST":
-#         try:
-#             print(f"Raw request body: {request.body.decode('utf-8')}")
-
-#             if request.content_type == 'application/json':
-#                 payload = json.loads(request.body.decode('utf-8'))
-#                 sanitized_payload = sanitize_multiline_text(payload)
-                
-#                 print(f"Sanitized Payload: {sanitized_payload}")
-                
-#                 csv_data = sanitized_payload.get('csv_data')
-#                 if csv_data:
-#                     csv_io = StringIO(csv_data)
-#                     df = pd.read_csv(csv_io)
-#                     print(f"DataFrame from CSV: {df}")
-#                 else:
-#                     df = pd.json_normalize(sanitized_payload)
-#                     print(f"DataFrame from JSON: {df}")
-            
-#             elif request.content_type == 'text/csv':
-#                 csv_data = request.body.decode('utf-8')
-#                 csv_io = StringIO(csv_data)
-#                 df = pd.read_csv(csv_io)
-#                 print(f"DataFrame from CSV: {df}")
-            
-#             else:
-#                 return JsonResponse({'error': 'Unsupported content type'}, status=415)
-
-
-#             print(df)
-            
-#             df = df.rename(columns={
-#                 'Source Code': 'source_code',
-#                 'Sku': 'sku',
-#                 'Status': 'status',
-#                 'Quantity': 'quantity',
-#                 # Add more column mappings here as needed
-#             })
-            
-#             df.rename(columns={"sku": "product_id"}, inplace=True)
-#             df["inventory_id"] = "I" + df["source_code"] + df["product_id"]
-#             df["status"] = df["status"].astype(bool)
-            
-#             df.set_index('product_id', inplace = True)
-            
-#             print(f"DataFrame: {df.head}")
-
-#             engine = create_engine(DATABASE_URL)
-#             pangres.upsert(df=df, con=engine, table_name='magentoData_inventory', if_row_exists='update', create_table=False)
-            
-
-#             return JsonResponse({"message": "Inventory created or updated successfully."}, status=201)
-
-#         except Exception as e:
-#             return JsonResponse({"error": str(e)}, status=500)
-
-#     else:
-#         return JsonResponse({"error": "Invalid HTTP method."}, status=405)
-
 
 @csrf_exempt
 def StockSource(request):

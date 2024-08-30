@@ -51,6 +51,7 @@ class Orders(models.Model):
     customer_group = models.CharField(max_length=100)
     subtotal = models.CharField(max_length=100)
     shipping_and_handling = models.CharField(max_length=100)
+    customer_name = models.CharField(max_length=100)
     customer = models.ForeignKey(Customers, on_delete=models.CASCADE, related_name='orders', to_field='email')
     payment_method = models.CharField(max_length=100)
     total_refunded = models.CharField(max_length=100)

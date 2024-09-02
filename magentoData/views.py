@@ -229,7 +229,6 @@ def ProductView(request):
             data = json.loads(request.body)
             df = pd.DataFrame(data)
             
-            print(f"====\n{df}\n========")
             df.rename(columns={"sku": "product_id"}, inplace=True)
 
             product_columns = [
@@ -242,63 +241,58 @@ def ProductView(request):
 
             product_df = df[product_columns].drop_duplicates(subset=['product_id'])
             
-            product = Product.objects.create(
-                product_id = product_df['product_id'],
-                attribute_set_code = product_df['attribute_set_code'],
-                product_type = product_df['product_type'],
-                product_websites = product_df['product_websites'],
-                name = product_df['name'],
-                product_online = product_df['product_online'],
-                tax_class_name = product_df['tax_class_name'],
-                visibility = product_df['visibility'],
-                price = product_df['price'],
-                special_price = product_df['special_price'],
-                url_key = product_df['url_key'],
-                created_at = product_df['created_at'],
-                updated_at = product_df['updated_at'],
-                new_from_date = product_df['new_from_date'],
-                new_to_date = product_df['new_to_date'],
-                display_product_options_in = product_df['display_product_options_in'],
-                map_price = product_df['map_price'],
-                msrp_price = product_df['msrp_price'],
-                map_enabled = product_df['map_enabled'],
-                gift_message_available = product_df['gift_message_available'],
-                msrp_display_actual_price_type = product_df['msrp_display_actual_price_type'],
-                country_of_manufacture = product_df['country_of_manufacture'],
-                additional_attributes = product_df['additional_attributes'],
-                qty = product_df['qty'],
-                out_of_stock_qty = product_df['out_of_stock_qty'],
-                max_cart_qty = product_df['max_cart_qty'],
-                additional_images = product_df['additional_images'],
-                additional_image_labels = product_df['additional_image_labels']
-            )
+            for _, row in product_df.iterrows():
+                Product.objects.create(
+                    product_id=row['product_id'],
+                    attribute_set_code=row['attribute_set_code'],
+                    product_type=row['product_type'],
+                    product_websites=row['product_websites'],
+                    name=row['name'],
+                    product_online=row['product_online'],
+                    tax_class_name=row['tax_class_name'],
+                    visibility=row['visibility'],
+                    price=row['price'],
+                    special_price=row['special_price'],
+                    url_key=row['url_key'],
+                    created_at=row['created_at'],
+                    updated_at=row['updated_at'],
+                    new_from_date=row['new_from_date'],
+                    new_to_date=row['new_to_date'],
+                    display_product_options_in=row['display_product_options_in'],
+                    map_price=row['map_price'],
+                    msrp_price=row['msrp_price'],
+                    map_enabled=row['map_enabled'],
+                    gift_message_available=row['gift_message_available'],
+                    msrp_display_actual_price_type=row['msrp_display_actual_price_type'],
+                    country_of_manufacture=row['country_of_manufacture'],
+                    additional_attributes=row['additional_attributes'],
+                    qty=row['qty'],
+                    out_of_stock_qty=row['out_of_stock_qty'],
+                    additional_images=row['additional_images'],
+                    additional_image_labels=row['additional_image_labels']
+                )
             
-            intersection_column = [
-                "product_id", "categories"
-            ]
-            
-            intersection_df = df[intersection_column].dropna(subset=['categories'], inplace=True)
+            intersection_column = ["product_id", "categories"]
+            intersection_df = df[intersection_column].dropna(subset=['categories'])
             intersection_df['categories'] = intersection_df['categories'].str.split(',')
-            
-            intersection_df = intersection_df.explode('categories')
-            intersection_df = intersection_df.reset_index(drop=True)
-            
-            product_category = ProductCategoryIntersection.objects.create(
-                product_id = intersection_df['product_id'],
-                category = intersection_df['categories']
-            )
-            
-            store_code = [
-                "product_id", "store_view_code"
-            ]
 
+            intersection_df = intersection_df.explode('categories').reset_index(drop=True)
+
+            for _, row in intersection_df.iterrows():
+                ProductCategoryIntersection.objects.create(
+                    product_id=row['product_id'],
+                    category=row['categories']
+                )
+            
+            store_code = ["product_id", "store_view_code"]
             store_code_df = df[store_code]
             store_code_df['store_view_code'] = store_code_df['store_view_code'].fillna('')
 
-            product_store = StoreCodeProduct.objects.create(
-                product_id = store_code_df['product_id'],
-                store_code_id = store_code_df['store_view_code']
-            )
+            for _, row in store_code_df.iterrows():
+                StoreCodeProduct.objects.create(
+                    product_id=row['product_id'],
+                    store_code_id=row['store_view_code']
+                )
 
             return JsonResponse({"message": "Data upserted successfully"}, status=200)
 

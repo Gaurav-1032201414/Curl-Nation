@@ -101,13 +101,13 @@ def CustomersView(request):
                 # Add more column mappings here as needed
             })
             
-            df.set_index('customer_id', inplace = True)
             
             if 'customer_since' not in df.columns or df['customer_since'].isnull().all():
                 df['customer_since'] = pd.Timestamp.now()
 
             # Upsert the data into the Customers table
             engine = create_engine(DATABASE_URL)
+            df.set_index('customer_id', inplace = True)
             pangres.upsert(df=df, con=engine, table_name='magentoData_customers', if_row_exists='update', create_table=False)
             
             num_rows = len(df)
@@ -207,20 +207,10 @@ def OrdersView(request):
                 }
             )
             
-            engine = create_engine(DATABASE_URL)
             
-            # order_df.reset_index(drop=True, inplace=True)
             
-            # Upsert Orders
-            # with connection.cursor() as cursor:
-            order_df.to_sql('magentoData_orders', con=engine, if_exists='append', index=False)
-
-            # Upsert Order Products
-            # with connection.cursor() as cursor:
-            order_product_df.to_sql('magentoData_orderproductintersection', con=engine, if_exists='append', index=False)
-            
-            num_rows = len(df)
-            return JsonResponse({'message': f'Orders processed and saved successfully, {num_rows} rows found.'}, status=200)
+            # num_rows = len(df)
+            return JsonResponse({'message': f'Orders processed and saved successfully, rows found.'}, status=200)
 
         except json.JSONDecodeError as e:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
@@ -238,74 +228,77 @@ def ProductView(request):
         try:
             data = json.loads(request.body)
             df = pd.DataFrame(data)
+            
+            print(f"====\n{df}\n========")
             df.rename(columns={"sku": "product_id"}, inplace=True)
-
-            engine = create_engine(DATABASE_URL)
 
             product_columns = [
                 'product_id', 'attribute_set_code', 'product_type', 'product_websites',
                 'name', 'product_online', 'tax_class_name', 'visibility', 'price', 'special_price', 'url_key',
                 'created_at', 'updated_at', 'new_from_date', 'new_to_date', 'display_product_options_in', 'map_price',
-                'msrp_price', 'map_enabled', 'gift_message_available', 'custom_design', 'custom_design_from',
-                'custom_design_to', 'custom_layout_update', 'page_layout', 'product_options_container',
-                'msrp_display_actual_price_type', 'country_of_manufacture', 'additional_attributes', 'qty',
-                'out_of_stock_qty', 'use_config_min_qty', 'is_qty_decimal', 'allow_backorders', 'use_config_backorders',
-                'min_cart_qty', 'use_config_min_sale_qty', 'max_cart_qty', 'use_config_max_sale_qty', 'is_in_stock',
-                'notify_on_stock_below', 'use_config_notify_stock_qty', 'manage_stock', 'use_config_manage_stock',
-                'use_config_qty_increments', 'qty_increments', 'use_config_enable_qty_inc', 'enable_qty_increments',
-                'is_decimal_divided', 'website_id', 'related_skus', 'related_position', 'crosssell_skus',
-                'crosssell_position', 'upsell_skus', 'upsell_position', 'additional_images', 'additional_image_labels',
-                'hide_from_product_page', 'custom_options', 'bundle_price_type', 'bundle_sku_type', 'bundle_price_view',
-                'bundle_weight_type', 'bundle_values', 'bundle_shipment_type', 'associated_skus', 'downloadable_links',
-                'downloadable_samples', 'configurable_variations', 'configurable_variation_labels'
+                'msrp_price', 'map_enabled', 'gift_message_available', 'msrp_display_actual_price_type', 'country_of_manufacture', 'additional_attributes', 'qty',
+                'out_of_stock_qty', 'additional_images', 'additional_image_labels'
             ]
 
-            # Upsert Product Data
             product_df = df[product_columns].drop_duplicates(subset=['product_id'])
-            product_df.set_index('product_id', inplace=True)
-            pangres.upsert(con=engine, df=product_df, table_name='magentoData_product', if_row_exists='update', index_col='product_id')
+            
+            product = Product.objects.create(
+                product_id = product_df['product_id'],
+                attribute_set_code = product_df['attribute_set_code'],
+                product_type = product_df['product_type'],
+                product_websites = product_df['product_websites'],
+                name = product_df['name'],
+                product_online = product_df['product_online'],
+                tax_class_name = product_df['tax_class_name'],
+                visibility = product_df['visibility'],
+                price = product_df['price'],
+                special_price = product_df['special_price'],
+                url_key = product_df['url_key'],
+                created_at = product_df['created_at'],
+                updated_at = product_df['updated_at'],
+                new_from_date = product_df['new_from_date'],
+                new_to_date = product_df['new_to_date'],
+                display_product_options_in = product_df['display_product_options_in'],
+                map_price = product_df['map_price'],
+                msrp_price = product_df['msrp_price'],
+                map_enabled = product_df['map_enabled'],
+                gift_message_available = product_df['gift_message_available'],
+                msrp_display_actual_price_type = product_df['msrp_display_actual_price_type'],
+                country_of_manufacture = product_df['country_of_manufacture'],
+                additional_attributes = product_df['additional_attributes'],
+                qty = product_df['qty'],
+                out_of_stock_qty = product_df['out_of_stock_qty'],
+                max_cart_qty = product_df['max_cart_qty'],
+                additional_images = product_df['additional_images'],
+                additional_image_labels = product_df['additional_image_labels']
+            )
+            
+            intersection_column = [
+                "product_id", "categories"
+            ]
+            
+            intersection_df = df[intersection_column].dropna(subset=['categories'], inplace=True)
+            intersection_df['categories'] = intersection_df['categories'].str.split(',')
+            
+            intersection_df = intersection_df.explode('categories')
+            intersection_df = intersection_df.reset_index(drop=True)
+            
+            product_category = ProductCategoryIntersection.objects.create(
+                product_id = intersection_df['product_id'],
+                category = intersection_df['categories']
+            )
+            
+            store_code = [
+                "product_id", "store_view_code"
+            ]
 
-            # Category Handling
-            category_column = 'categories'
-            Categories = df[category_column].dropna().tolist()
-            category_list = list(set([item for sublist in Categories for item in str(sublist).split(',')]))
-            categories_list = list(set([category.replace("Default Category/Categories/", "") for category in category_list]))
-            split_categories = [category.split('/', 3) for category in categories_list]
+            store_code_df = df[store_code]
+            store_code_df['store_view_code'] = store_code_df['store_view_code'].fillna('')
 
-            # Create category DataFrame
-            category_df = pd.DataFrame(split_categories, columns=['Main Type', 'Category Type', 'Sub-Category Type', 'Additional Info'])
-            category_df.fillna('', inplace=True)
-            category_df['category_id'] = range(1, len(category_df) + 1)
-
-            pangres.upsert(con=engine, df=category_df, table_name='magentoData_category', if_row_exists='update', index_col='category_id')
-
-            # Intersection Handling
-            intersection_data = []
-            for _, row in category_df.iterrows():
-                for product_id in product_df['product_id']:
-                    intersection_data.append({'product_id': product_id, 'category_id': row['category_id'], 'category': row['Category Type']})
-
-            intersection_df = pd.DataFrame(intersection_data).drop_duplicates()
-            pangres.upsert(con=engine, df=intersection_df, table_name='magentoData_productcategoryintersection', if_row_exists='update')
-
-            # Store code handling
-            store_codes = df['store_view_code'].dropna().unique()
-            store_code_df = pd.DataFrame({'store_code_view': list(store_codes)})
-            store_code_df['store_code_id'] = range(1, len(store_code_df) + 1)
-            store_code_df.set_index('store_code_id', inplace=True)
-
-            # Upsert Store Code Data
-            pangres.upsert(con=engine, df=store_code_df, table_name='magentoData_storecode', if_row_exists='update', index_col='store_code_id')
-
-            # Prepare product_storecode data
-            product_storecode_data = []
-            for product_id in product_df['product_id']:
-                for store_code in store_codes:
-                    store_code_id = store_code_df[store_code_df['store_code_view'] == store_code].index[0]
-                    product_storecode_data.append({'product_id': product_id, 'store_code_id': store_code_id})
-
-            product_storecode_df = pd.DataFrame(product_storecode_data).drop_duplicates()
-            pangres.upsert(con=engine, df=product_storecode_df, table_name='magentoData_storecodeproduct', if_row_exists='update')
+            product_store = StoreCodeProduct.objects.create(
+                product_id = store_code_df['product_id'],
+                store_code_id = store_code_df['store_view_code']
+            )
 
             return JsonResponse({"message": "Data upserted successfully"}, status=200)
 
@@ -314,6 +307,7 @@ def ProductView(request):
 
     else:
         return JsonResponse({"error": "Invalid HTTP method"}, status=405)
+
 
 @csrf_exempt
 def StockSource(request):

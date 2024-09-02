@@ -35,6 +35,83 @@ class Customers(models.Model):
         return self.email
 
 
+class Product(models.Model):
+    product_id = models.CharField(max_length=255, primary_key=True)
+    attribute_set_code = models.CharField(max_length=255)
+    product_type = models.CharField(max_length=255)
+    product_websites = models.CharField(max_length=255, null=True, blank=True)
+    name = models.CharField(max_length=255)
+    product_online = models.FloatField(null=True, blank=True)
+    tax_class_name = models.CharField(max_length=255, null=True, blank=True)
+    visibility = models.CharField(max_length=255, null=True, blank=True)
+    price = models.FloatField(null=True, blank=True)
+    special_price = models.FloatField(null=True, blank=True)
+    url_key = models.CharField(max_length=255, null=True, blank=True)
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
+    new_from_date = models.DateTimeField()
+    new_to_date = models.DateTimeField()
+    display_product_options_in = models.CharField(max_length=255, null=True, blank=True)
+    map_price = models.CharField(max_length=255, null=True, blank=True)
+    msrp_price = models.CharField(max_length=255, null=True, blank=True)
+    map_enabled = models.CharField(max_length=255, null=True, blank=True)
+    gift_message_available = models.CharField(max_length=255, null=True, blank=True)
+    # custom_design = models.CharField(max_length=255, null=True, blank=True)
+    # custom_design_from = models.CharField(max_length=255, null=True, blank=True)
+    # custom_design_to = models.CharField(max_length=255, null=True, blank=True)
+    # custom_layout_update = models.CharField(max_length=255, null=True, blank=True)
+    # page_layout = models.CharField(max_length=255, null=True, blank=True)
+    # product_options_container = models.CharField(max_length=255, null=True, blank=True)
+    msrp_display_actual_price_type = models.CharField(max_length=255, null=True, blank=True)
+    country_of_manufacture = models.CharField(max_length=255, null=True, blank=True)
+    additional_attributes = models.TextField(null=True, blank=True)
+    qty = models.CharField(max_length=255, null=True, blank=True)
+    out_of_stock_qty = models.BooleanField(null=True, default=False)
+    # use_config_min_qty = models.BooleanField(null=True, default=False)
+    # is_qty_decimal = models.BooleanField(null=True, default=False)
+    # allow_backorders = models.BooleanField(null=True, default=False)
+    # use_config_backorders = models.BooleanField(null=True, default=False)
+    # min_cart_qty = models.BooleanField(null=True, default=False)
+    # use_config_min_sale_qty = models.BooleanField(null=True, default=False)
+    max_cart_qty = models.FloatField(null=True, default=0)
+    # use_config_max_sale_qty = models.BooleanField(null=True, default=False)
+    # is_in_stock = models.BooleanField(null=True, default=False)
+    # notify_on_stock_below = models.BooleanField(null=True, default=False)
+    # use_config_notify_stock_qty = models.BooleanField(null=True, default=False)
+    # manage_stock = models.BooleanField(null=True, default=False)
+    # use_config_manage_stock = models.BooleanField(null=True, default=False)
+    # use_config_qty_increments = models.BooleanField(null=True, default=False)
+    # qty_increments = models.BooleanField(null=True, default=False)
+    # use_config_enable_qty_inc = models.BooleanField(null=True, default=False)
+    # enable_qty_increments = models.BooleanField(null=True, default=False)
+    # is_decimal_divided = models.BooleanField(null=True, default=False)
+    # website_id = models.BooleanField(null=True, default=False)
+    # related_skus = models.CharField(max_length=255, null=True, blank=True)
+    # related_position = models.CharField(max_length=255, null=True, blank=True)
+    # crosssell_skus = models.CharField(max_length=255, null=True, blank=True)
+    # crosssell_position = models.CharField(max_length=255, null=True, blank=True)
+    # upsell_skus = models.CharField(max_length=255, null=True, blank=True)
+    # upsell_position = models.CharField(max_length=255, null=True, blank=True)
+    additional_images = models.CharField(max_length=255, null=True, blank=True)
+    additional_image_labels = models.CharField(max_length=255, null=True, blank=True)
+    # hide_from_product_page = models.CharField(max_length=255, null=True, blank=True)
+    # custom_options = models.CharField(max_length=255, null=True, blank=True)
+    # bundle_price_type = models.CharField(max_length=255, null=True, blank=True)
+    # bundle_sku_type = models.CharField(max_length=255, null=True, blank=True)
+    # bundle_price_view = models.CharField(max_length=255, null=True, blank=True)
+    # bundle_weight_type = models.CharField(max_length=255, null=True, blank=True)
+    # bundle_values = models.CharField(max_length=255, null=True, blank=True)
+    # bundle_shipment_type = models.CharField(max_length=255, null=True, blank=True)
+    # associated_skus = models.CharField(max_length=255, null=True, blank=True)
+    # downloadable_links = models.CharField(max_length=255, null=True, blank=True)
+    # downloadable_samples = models.CharField(max_length=255, null=True, blank=True)
+    # configurable_variations = models.CharField(max_length=255, null=True, blank=True)
+    # configurable_variation_labels = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.product_id
+    
+
 class Orders(models.Model):
     order_id = models.CharField(max_length=100, primary_key=True)
     purchase_point = models.CharField(max_length=100)
@@ -65,9 +142,10 @@ class Orders(models.Model):
         return self.order_id
 
 
+
 class OrderProductIntersection(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='products')
-    product_id = models.CharField(max_length=100)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
     quantity = models.CharField(max_length=100)
     price = models.CharField(max_length=100)
     barcode = models.CharField(max_length=100)
@@ -80,106 +158,10 @@ class OrderProductIntersection(models.Model):
 
     def __str__(self):
         return self.product_id
-
-
-class Product(models.Model):
-    product_id = models.CharField(max_length=255, primary_key=True)
-    store_view_code = models.CharField(max_length=255, null=True, blank=True)
-    attribute_set_code = models.CharField(max_length=255)
-    product_type = models.CharField(max_length=255)
-    categories = models.CharField(max_length=255, null=True, blank=True)
-    product_websites = models.CharField(max_length=255, null=True, blank=True)
-    name = models.CharField(max_length=255)
-    product_online = models.FloatField(null=True, blank=True)
-    tax_class_name = models.CharField(max_length=255, null=True, blank=True)
-    visibility = models.CharField(max_length=255, null=True, blank=True)
-    price = models.FloatField(null=True, blank=True)
-    special_price = models.FloatField(null=True, blank=True)
-    url_key = models.CharField(max_length=255, null=True, blank=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
-    new_from_date = models.DateTimeField()
-    new_to_date = models.DateTimeField()
-    display_product_options_in = models.CharField(max_length=255, null=True, blank=True)
-    map_price = models.CharField(max_length=255, null=True, blank=True)
-    msrp_price = models.CharField(max_length=255, null=True, blank=True)
-    map_enabled = models.CharField(max_length=255, null=True, blank=True)
-    gift_message_available = models.CharField(max_length=255, null=True, blank=True)
-    custom_design = models.CharField(max_length=255, null=True, blank=True)
-    custom_design_from = models.CharField(max_length=255, null=True, blank=True)
-    custom_design_to = models.CharField(max_length=255, null=True, blank=True)
-    custom_layout_update = models.CharField(max_length=255, null=True, blank=True)
-    page_layout = models.CharField(max_length=255, null=True, blank=True)
-    product_options_container = models.CharField(max_length=255, null=True, blank=True)
-    msrp_display_actual_price_type = models.CharField(max_length=255, null=True, blank=True)
-    country_of_manufacture = models.CharField(max_length=255, null=True, blank=True)
-    additional_attributes = models.TextField(null=True, blank=True)
-    qty = models.CharField(max_length=255, null=True, blank=True)
-    out_of_stock_qty = models.BooleanField(null=True, default=False)
-    use_config_min_qty = models.BooleanField(null=True, default=False)
-    is_qty_decimal = models.BooleanField(null=True, default=False)
-    allow_backorders = models.BooleanField(null=True, default=False)
-    use_config_backorders = models.BooleanField(null=True, default=False)
-    min_cart_qty = models.BooleanField(null=True, default=False)
-    use_config_min_sale_qty = models.BooleanField(null=True, default=False)
-    max_cart_qty = models.FloatField(null=True, default=0)
-    use_config_max_sale_qty = models.BooleanField(null=True, default=False)
-    is_in_stock = models.BooleanField(null=True, default=False)
-    notify_on_stock_below = models.BooleanField(null=True, default=False)
-    use_config_notify_stock_qty = models.BooleanField(null=True, default=False)
-    manage_stock = models.BooleanField(null=True, default=False)
-    use_config_manage_stock = models.BooleanField(null=True, default=False)
-    use_config_qty_increments = models.BooleanField(null=True, default=False)
-    qty_increments = models.BooleanField(null=True, default=False)
-    use_config_enable_qty_inc = models.BooleanField(null=True, default=False)
-    enable_qty_increments = models.BooleanField(null=True, default=False)
-    is_decimal_divided = models.BooleanField(null=True, default=False)
-    website_id = models.BooleanField(null=True, default=False)
-    related_skus = models.CharField(max_length=255, null=True, blank=True)
-    related_position = models.CharField(max_length=255, null=True, blank=True)
-    crosssell_skus = models.CharField(max_length=255, null=True, blank=True)
-    crosssell_position = models.CharField(max_length=255, null=True, blank=True)
-    upsell_skus = models.CharField(max_length=255, null=True, blank=True)
-    upsell_position = models.CharField(max_length=255, null=True, blank=True)
-    additional_images = models.CharField(max_length=255, null=True, blank=True)
-    additional_image_labels = models.CharField(max_length=255, null=True, blank=True)
-    hide_from_product_page = models.CharField(max_length=255, null=True, blank=True)
-    custom_options = models.CharField(max_length=255, null=True, blank=True)
-    bundle_price_type = models.CharField(max_length=255, null=True, blank=True)
-    bundle_sku_type = models.CharField(max_length=255, null=True, blank=True)
-    bundle_price_view = models.CharField(max_length=255, null=True, blank=True)
-    bundle_weight_type = models.CharField(max_length=255, null=True, blank=True)
-    bundle_values = models.CharField(max_length=255, null=True, blank=True)
-    bundle_shipment_type = models.CharField(max_length=255, null=True, blank=True)
-    associated_skus = models.CharField(max_length=255, null=True, blank=True)
-    downloadable_links = models.CharField(max_length=255, null=True, blank=True)
-    downloadable_samples = models.CharField(max_length=255, null=True, blank=True)
-    configurable_variations = models.CharField(max_length=255, null=True, blank=True)
-    configurable_variation_labels = models.CharField(max_length=255, null=True, blank=True)
-
-    def __str__(self):
-        return self.product_id
-    
-
-class Category(models.Model):
-    category_id = models.CharField(max_length=255, primary_key=True)
-    gender_type = models.CharField(max_length=100)
-    category_type = models.CharField(max_length=100)
-    sub_category_type = models.CharField(max_length=100)
-    additional_info = models.CharField(max_length=255)
-    category = models.CharField(max_length=512, blank=True) 
-
-    def save(self, *args, **kwargs):
-        self.category = f'{self.gender_type}/{self.category_type}/{self.sub_category_type}/{self.additional_info}'
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.category
     
 
 class ProductCategoryIntersection(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_category_intersections')
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     category = models.CharField(max_length=255)
     
     def __str__(self):
@@ -197,17 +179,9 @@ class Inventory(models.Model):
         return f"{self.product_id} - {self.source_code}"
     
 
-class StoreCode(models.Model):
-    store_code_id = models.CharField(max_length=255, primary_key=True)
-    store_view_code = models.CharField(max_length=255)
-    
-    def __str__(self):
-        return self.store_code_id
-
-
 class StoreCodeProduct(models.Model):
-    store_code_id = models.ForeignKey(StoreCode, on_delete=models.CASCADE, related_name='store_code_products')
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='store_code_products')
+    store_view_code = models.CharField(max_length=255)
 
     def __str__(self):
         return f"{self.store_code_id} - {self.product_id}"

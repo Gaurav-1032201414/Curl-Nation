@@ -131,7 +131,7 @@ def OrdersView(request):
         try:
             if request.content_type == 'application/json':
                 payload = json.loads(request.body.decode('utf-8'))
-                sanitized_payload = sanitize_multiline_text(payload)
+                sanitized_payload = sanitize_multiline_text(payload)  # Assuming you have a function to sanitize text
 
                 csv_data = sanitized_payload.get('csv_data')
                 if csv_data:
@@ -191,6 +191,7 @@ def OrdersView(request):
 
             # Create or update the Order instance
             for _, row in order_df.iterrows():
+                customer_instance, _ = Customers.objects.get_or_create(email=row['customer_email'])
                 Orders.objects.create(
                     order_id=row['order_id'],
                     purchase_point=row['purchase_point'],
@@ -208,6 +209,7 @@ def OrdersView(request):
                     subtotal=row['subtotal'],
                     shipping_and_handling=row['shipping_and_handling'],
                     customer_name=row['customer_name'],
+                    customer=customer_instance,  # Link to the customer instance
                     payment_method=row['payment_method'],
                     total_refunded=row['total_refunded'],
                     allocated_sources=row['allocated_sources'],
@@ -234,6 +236,7 @@ def OrdersView(request):
                     "City": "city",
                     "Country": "country",
                     "Mailchimp Sync": "mailchimp_sync",
+                    "Braintree Transaction Source": "braintree_transaction_source"
                 }
             )
 
@@ -244,8 +247,8 @@ def OrdersView(request):
                     product_instance = Product.objects.get(product_id=row['product_id'])
                     
                     OrderProductIntersection.objects.create(
-                        order_id=order_instance,
-                        product_id=product_instance,
+                        order=order_instance,
+                        product=product_instance,
                         quantity=row['quantity'],
                         price=row['price'],
                         barcode=row['barcode'],
@@ -253,6 +256,7 @@ def OrdersView(request):
                         city=row['city'],
                         country=row['country'],
                         mailchimp_sync=row['mailchimp_sync'],
+                        braintree_transaction_source=row['braintree_transaction_source']
                     )
                 except Orders.DoesNotExist:
                     return JsonResponse({'error': f'Order with ID {row["order_id"]} does not exist.'}, status=400)
@@ -269,7 +273,7 @@ def OrdersView(request):
     
     else:
         return HttpResponse("This endpoint only accepts POST requests.", status=405)
-
+    
 
 @csrf_exempt
 def ProductView(request):

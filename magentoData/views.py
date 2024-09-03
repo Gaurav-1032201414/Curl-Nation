@@ -227,7 +227,7 @@ def ProductView(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            df = pd.DataFrame([data])
+            df = pd.DataFrame([data])  # Ensure it's treated as a single-row DataFrame
             
             df.rename(columns={"sku": "product_id"}, inplace=True)
 
@@ -241,6 +241,7 @@ def ProductView(request):
 
             product_df = df[product_columns].drop_duplicates(subset=['product_id'])
             
+            # Create or update the Product instance
             for _, row in product_df.iterrows():
                 product, created = Product.objects.update_or_create(
                     product_id=row['product_id'],
@@ -274,6 +275,7 @@ def ProductView(request):
                     }
                 )
             
+            # Process the categories
             intersection_column = ["product_id", "categories"]
             intersection_df = df[intersection_column].dropna(subset=['categories'])
             intersection_df['categories'] = intersection_df['categories'].str.split(',')
@@ -281,29 +283,34 @@ def ProductView(request):
             intersection_df = intersection_df.explode('categories').reset_index(drop=True)
 
             for _, row in intersection_df.iterrows():
+                product_instance = Product.objects.get(product_id=row['product_id'])
                 ProductCategoryIntersection.objects.create(
-                    product_id=row['product_id'],
+                    product_id=product_instance,  # Pass the Product instance instead of just the ID
                     category=row['categories']
                 )
             
+            # Process the store view code
             store_code = ["product_id", "store_view_code"]
             store_code_df = df[store_code].copy()
             store_code_df['store_view_code'] = store_code_df['store_view_code'].fillna('')
 
             for _, row in store_code_df.iterrows():
+                product_instance = Product.objects.get(product_id=row['product_id'])
                 StoreCodeProduct.objects.create(
-                    product_id=row['product_id'],
+                    product_id=product_instance,  # Pass the Product instance instead of just the ID
                     store_code_id=row['store_view_code']
                 )
 
             return JsonResponse({"message": "Data upserted successfully"}, status=200)
 
+        except Product.DoesNotExist:
+            return JsonResponse({"error": "Product does not exist for the given product_id"}, status=400)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
 
     else:
         return JsonResponse({"error": "Invalid HTTP method"}, status=405)
-
+    
 
 @csrf_exempt
 def StockSource(request):

@@ -36,7 +36,7 @@ def parse_datetime(date_str):
     except ValueError:
         return None
 
-# Handle customer data upsert
+
 @csrf_exempt
 def CustomersView(request):
     if request.method == 'POST':
@@ -151,6 +151,7 @@ def OrdersView(request):
             # DataFrame processing
             df = df.replace({None: np.nan})
 
+            # Orders DataFrame
             order_df = df[[
                 "ID", "Purchase Point", "Purchase Date", "Bill-to Name", "Ship-to Name", 
                 "Grand Total (Base)", "Grand Total (Purchased)", "Status", "Billing Address", 
@@ -188,6 +189,35 @@ def OrdersView(request):
                 }
             )
 
+            # Create or update the Order instance
+            for _, row in order_df.iterrows():
+                Orders.objects.create(
+                    order_id=row['order_id'],
+                    purchase_point=row['purchase_point'],
+                    purchase_date=row['purchase_date'],
+                    bill_to_name=row['bill_to_name'],
+                    ship_to_name=row['ship_to_name'],
+                    grand_total_base=row['grand_total_base'],
+                    grand_total_purchased=row['grand_total_purchased'],
+                    status=row['status'],
+                    billing_address=row['billing_address'],
+                    shipping_address=row['shipping_address'],
+                    shipping_information=row['shipping_information'],
+                    customer_email=row['customer_email'],
+                    customer_group=row['customer_group'],
+                    subtotal=row['subtotal'],
+                    shipping_and_handling=row['shipping_and_handling'],
+                    customer_name=row['customer_name'],
+                    payment_method=row['payment_method'],
+                    total_refunded=row['total_refunded'],
+                    allocated_sources=row['allocated_sources'],
+                    pickup_location_code=row['pickup_location_code'],
+                    phone_number=row['phone_number'],
+                    order_note=row['order_note'],
+                    app_order=row['app_order']
+                )
+
+            # Order products DataFrame
             order_product_df = df[[
                 "ID", "Sku", "Quantity", "Price", "Barcode", "Zip Code", 
                 "City", "Country", "Mailchimp Sync", "Braintree Transaction Source"
@@ -206,11 +236,30 @@ def OrdersView(request):
                     "Mailchimp Sync": "mailchimp_sync",
                 }
             )
-            
-            
-            
-            # num_rows = len(df)
-            return JsonResponse({'message': f'Orders processed and saved successfully, rows found.'}, status=200)
+
+            # Create or update the OrderProductIntersection instance
+            for _, row in order_product_df.iterrows():
+                try:
+                    order_instance = Orders.objects.get(order_id=row['order_id'])
+                    product_instance = Product.objects.get(product_id=row['product_id'])
+                    
+                    OrderProductIntersection.objects.create(
+                        order_id=order_instance,
+                        product_id=product_instance,
+                        quantity=row['quantity'],
+                        price=row['price'],
+                        barcode=row['barcode'],
+                        zip_code=row['zip_code'],
+                        city=row['city'],
+                        country=row['country'],
+                        mailchimp_sync=row['mailchimp_sync'],
+                    )
+                except Orders.DoesNotExist:
+                    return JsonResponse({'error': f'Order with ID {row["order_id"]} does not exist.'}, status=400)
+                except Product.DoesNotExist:
+                    return JsonResponse({'error': f'Product with ID {row["product_id"]} does not exist.'}, status=400)
+                      
+            return JsonResponse({'message': 'Orders processed and saved successfully'}, status=200)
 
         except json.JSONDecodeError as e:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
@@ -312,8 +361,8 @@ def ProductView(request):
         return JsonResponse({"error": "Invalid HTTP method"}, status=405)
     
 
-@csrf_exempt
-def StockSource(request):
+# @csrf_exempt
+# def StockSource(request):
     if request.method == "POST":
         try:
             print(f"Raw request body: {request.body.decode('utf-8')}")

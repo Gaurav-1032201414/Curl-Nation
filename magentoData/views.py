@@ -298,7 +298,7 @@ def ProductView(request):
                 product_instance = Product.objects.get(product_id=row['product_id'])
                 StoreCodeProduct.objects.create(
                     product_id=product_instance,  # Pass the Product instance instead of just the ID
-                    store_code_id=row['store_view_code']
+                    store_view_code=row['store_view_code']
                 )
 
             return JsonResponse({"message": "Data upserted successfully"}, status=200)

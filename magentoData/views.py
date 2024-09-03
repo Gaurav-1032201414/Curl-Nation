@@ -227,7 +227,7 @@ def ProductView(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            df = pd.DataFrame(data)
+            df = pd.DataFrame([data])
             
             df.rename(columns={"sku": "product_id"}, inplace=True)
 

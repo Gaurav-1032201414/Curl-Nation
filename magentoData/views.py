@@ -242,34 +242,36 @@ def ProductView(request):
             product_df = df[product_columns].drop_duplicates(subset=['product_id'])
             
             for _, row in product_df.iterrows():
-                Product.objects.create(
+                product, created = Product.objects.update_or_create(
                     product_id=row['product_id'],
-                    attribute_set_code=row['attribute_set_code'],
-                    product_type=row['product_type'],
-                    product_websites=row['product_websites'],
-                    name=row['name'],
-                    product_online=row['product_online'],
-                    tax_class_name=row['tax_class_name'],
-                    visibility=row['visibility'],
-                    price=row['price'],
-                    special_price=row['special_price'],
-                    url_key=row['url_key'],
-                    created_at=row['created_at'],
-                    updated_at=row['updated_at'],
-                    new_from_date=row['new_from_date'],
-                    new_to_date=row['new_to_date'],
-                    display_product_options_in=row['display_product_options_in'],
-                    map_price=row['map_price'],
-                    msrp_price=row['msrp_price'],
-                    map_enabled=row['map_enabled'],
-                    gift_message_available=row['gift_message_available'],
-                    msrp_display_actual_price_type=row['msrp_display_actual_price_type'],
-                    country_of_manufacture=row['country_of_manufacture'],
-                    additional_attributes=row['additional_attributes'],
-                    qty=row['qty'],
-                    out_of_stock_qty=row['out_of_stock_qty'],
-                    additional_images=row['additional_images'],
-                    additional_image_labels=row['additional_image_labels']
+                    defaults={
+                        'attribute_set_code': row['attribute_set_code'],
+                        'product_type': row['product_type'],
+                        'product_websites': row['product_websites'],
+                        'name': row['name'],
+                        'product_online': row['product_online'],
+                        'tax_class_name': row['tax_class_name'],
+                        'visibility': row['visibility'],
+                        'price': row['price'],
+                        'special_price': row['special_price'],
+                        'url_key': row['url_key'],
+                        'created_at': row['created_at'],
+                        'updated_at': row['updated_at'],
+                        'new_from_date': row['new_from_date'],
+                        'new_to_date': row['new_to_date'],
+                        'display_product_options_in': row['display_product_options_in'],
+                        'map_price': row['map_price'],
+                        'msrp_price': row['msrp_price'],
+                        'map_enabled': row['map_enabled'],
+                        'gift_message_available': row['gift_message_available'],
+                        'msrp_display_actual_price_type': row['msrp_display_actual_price_type'],
+                        'country_of_manufacture': row['country_of_manufacture'],
+                        'additional_attributes': row['additional_attributes'],
+                        'qty': row['qty'],
+                        'out_of_stock_qty': row['out_of_stock_qty'],
+                        'additional_images': row['additional_images'],
+                        'additional_image_labels': row['additional_image_labels']
+                    }
                 )
             
             intersection_column = ["product_id", "categories"]

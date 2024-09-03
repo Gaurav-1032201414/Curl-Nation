@@ -285,7 +285,7 @@ def ProductView(request):
                 )
             
             store_code = ["product_id", "store_view_code"]
-            store_code_df = df[store_code]
+            store_code_df = df[store_code].copy()
             store_code_df['store_view_code'] = store_code_df['store_view_code'].fillna('')
 
             for _, row in store_code_df.iterrows():

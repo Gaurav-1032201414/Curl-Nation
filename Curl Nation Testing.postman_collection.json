@@ -1,0 +1,104 @@
+{
+	"info": {
+		"_postman_id": "67ac72b5-1370-4232-b6bb-60cb07dbcdfb",
+		"name": "Curl Nation Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30201163",
+		"_collection_link": "https://curl-nation.postman.co/workspace/Curl-Nation~63183466-2d28-4148-8a7f-bf05d038f24b/collection/30201163-67ac72b5-1370-4232-b6bb-60cb07dbcdfb?action=share&source=collection_link&creator=30201163"
+	},
+	"item": [
+		{
+			"name": "https://curl-nation-248dbd3f7186.herokuapp.com/magentoData/api/customers",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "// {\r\n//   \"ID\": \"{{ID}}\",\r\n//   \"Name\": \"{{Name}}\",\r\n//   \"Email\": \"{{Email}}\",\r\n//   \"Group\": \"{{Group}}\",\r\n//   \"Phone\": \"{{Phone}}\",\r\n//   \"ZIP\": \"{{ZIP}}\",\r\n//   \"Country\": \"{{Country}}\",\r\n//   \"State/Province\": \"{{State/Province}}\",\r\n//   \"Customer Since\": \"{{Customer Since}}\",\r\n//   \"Web Site\": \"{{Web Site}}\",\r\n//   \"Confirmed email\": \"{{Confirmed email}}\",\r\n//   \"Account Created in\": \"{{Account Created in}}\",\r\n//   \"Billing Address\": \"{{Billing Address}}\",\r\n//   \"Shipping Address\": \"{{Shipping Address}}\",\r\n//   \"Date of Birth\": \"{{Date of Birth}}\",\r\n//   \"Tax VAT Number\": \"{{Tax VAT Number}}\",\r\n//   \"Gender\": \"{{Gender}}\",\r\n//   \"Street Address\": \"{{Street Address}}\",\r\n//   \"City\": \"{{City}}\",\r\n//   \"Fax\": \"{{Fax}}\",\r\n//   \"VAT Number\": \"{{VAT Number}}\",\r\n//   \"Company\": \"{{Company}}\",\r\n//   \"Billing Firstname\": \"{{Billing Firstname}}\",\r\n//   \"Billing Lastname\": \"{{Billing Lastname}}\",\r\n//   \"Account Lock\": \"{{Account Lock}}\",\r\n//   \"Mailchimp\": \"{{Mailchimp}}\",\r\n//   \"Tier\": \"{{Tier}}\",\r\n//   \"Rewards Balance\": \"{{Rewards Balance}}\"\r\n// }\r\n\r\n{\r\n  \"ID\": \"9930\",\r\n  \"Name\": \"Rehan from API\",\r\n  \"Email\": \"mailto:rehan@yopmailtestnew.com\",\r\n  \"Group\": \"\",\r\n  \"Phone\": \"9960327911\",\r\n  \"ZIP\": \"\",\r\n  \"Country\": \"India\",\r\n  \"State/Province\": \"Maharashtra\",\r\n  \"Customer Since\": \"\",\r\n  \"Web Site\": \"\",\r\n  \"Confirmed email\": \"mailto:rehan@yopmailtestnew.com\",\r\n  \"Account Created in\": \"\",\r\n  \"Billing Address\": \"\",\r\n  \"Shipping Address\": \"\",\r\n  \"Date of Birth\": \"14/04/1990\",\r\n  \"Tax VAT Number\": \"\",\r\n  \"Gender\": \"Male\",\r\n  \"Street Address\": \"\",\r\n  \"City\": \"\",\r\n  \"Fax\": \"\",\r\n  \"VAT Number\": \"\",\r\n  \"Company\": \"\",\r\n  \"Billing Firstname\": \"\",\r\n  \"Billing Lastname\": \"\",\r\n  \"Account Lock\": \"\",\r\n  \"Mailchimp\": \"\",\r\n  \"Tier\": \"\",\r\n  \"Rewards Balance\": \"\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://curl-nation-248dbd3f7186.herokuapp.com/magentoData/api/customers",
+					"protocol": "https",
+					"host": [
+						"curl-nation-248dbd3f7186",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"magentoData",
+						"api",
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://curl-nation-248dbd3f7186.herokuapp.com/magentoData/api/orders",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "// {\r\n//     \"ID\": \"{{ID}}\",\r\n//     \"Purchase Point\": \"{{Purchase Point}}\",\r\n//     \"Purchase Date\": \"{{Purchase Date}}\",\r\n//     \"Bill-to Name\": \"{{Bill-to Name}}\",\r\n//     \"Ship-to Name\": \"{{Ship-to Name}}\",\r\n//     \"Grand Total (Base)\": \"{{Grand Total (Base)}}\",\r\n//     \"Grand Total (Purchased)\": \"{{Grand Total (Purchased)}}\",\r\n//     \"Status\": \"{{Status}}\",\r\n//     \"Billing Address\": \"{{Billing Address}}\",\r\n//     \"Shipping Address\": \"{{Shipping Address}}\",\r\n//     \"Shipping Information\": \"{{Shipping Information}}\",\r\n//     \"Customer Email\": \"{{Customer Email}}\",\r\n//     \"Customer Group\": \"{{Customer Group}}\",\r\n//     \"Subtotal\": \"{{Subtotal}}\",\r\n//     \"Shipping and Handling\": \"{{Shipping and Handling}}\",\r\n//     \"Customer Name\": \"{{Customer Name}}\",\r\n//     \"Payment Method\": \"{{Payment Method}}\",\r\n//     \"Total Refunded\": \"{{Total Refunded}}\",\r\n//     \"Allocated sources\": \"{{Allocated sources}}\",\r\n//     \"Pickup Location Code\": \"{{Pickup Location Code}}\",\r\n//     \"Sku\": \"{{Sku}}\",\r\n//     \"Quantity\": \"{{Quantity}}\",\r\n//     \"Price\": \"{{Price}}\",\r\n//     \"Barcode\": \"{{Barcode}}\",\r\n//     \"Zip Code\": \"{{Zip Code}}\",\r\n//     \"City\": \"{{City}}\",\r\n//     \"Country\": \"{{Country}}\",\r\n//     \"Phone Number\": \"{{Phone Number}}\",\r\n//     \"Mailchimp Sync\": \"{{Mailchimp Sync}}\",\r\n//     \"App Order\": \"{{App Order}}\",\r\n//     \"Order Note\": \"{{Order Note}}\",\r\n//     \"Braintree Transaction Source\": \"{{Braintree Transaction Source}}\"\r\n// }\r\n\r\n{\r\n    \"ID\": \"ORD123456\",\r\n    \"Purchase Point\": \"Online Store\",\r\n    \"Purchase Date\": \"2024-09-01\",\r\n    \"Bill-to Name\": \"John Doe\",\r\n    \"Ship-to Name\": \"Jane Doe\",\r\n    \"Grand Total (Base)\": \"100.00\",\r\n    \"Grand Total (Purchased)\": \"110.00\",\r\n    \"Status\": \"Completed\",\r\n    \"Billing Address\": \"123 Main St, Springfield, IL, 62701\",\r\n    \"Shipping Address\": \"456 Elm St, Springfield, IL, 62702\",\r\n    \"Shipping Information\": \"Standard Shipping\",\r\n    \"Customer Email\": \"mailto:rehan@yopmailtestnew.com\",\r\n    \"Customer Group\": \"Regular\",\r\n    \"Subtotal\": \"90.00\",\r\n    \"Shipping and Handling\": \"10.00\",\r\n    \"Customer Name\": \"John Doe\",\r\n    \"Payment Method\": \"Credit Card\",\r\n    \"Total Refunded\": \"0.00\",\r\n    \"Allocated sources\": \"Warehouse A\",\r\n    \"Pickup Location Code\": \"LOC123\",\r\n    \"Sku\": \"ABC123\",\r\n    \"Quantity\": \"2\",\r\n    \"Price\": \"50.00\",\r\n    \"Barcode\": \"0123456789012\",\r\n    \"Zip Code\": \"62702\",\r\n    \"City\": \"Springfield\",\r\n    \"Country\": \"USA\",\r\n    \"Phone Number\": \"555-1234\",\r\n    \"Mailchimp Sync\": \"Yes\",\r\n    \"App Order\": \"True\",\r\n    \"Order Note\": \"Please leave the package at the front door.\",\r\n    \"Braintree Transaction Source\": \"Online Payment\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://curl-nation-248dbd3f7186.herokuapp.com/magentoData/api/orders",
+					"protocol": "https",
+					"host": [
+						"curl-nation-248dbd3f7186",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"magentoData",
+						"api",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://curl-nation-248dbd3f7186.herokuapp.com/magentoData/api/products",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "// {\r\n//     \"sku\": \"{{sku}}\",\r\n//     \"store_view_code\": \"{{store_view_code}}\",\r\n//     \"attribute_set_code\": \"{{attribute_set_code}}\",\r\n//     \"product_type\": \"{{product_type}}\",\r\n//     \"categories\": \"{{categories}}\",\r\n//     \"product_websites\": \"{{product_websites}}\",\r\n//     \"name\": \"{{name}}\",\r\n//     \"product_online\": \"{{product_online}}\",\r\n//     \"tax_class_name\": \"{{tax_class_name}}\",\r\n//     \"visibility\": \"{{visibility}}\",\r\n//     \"price\": \"{{price}}\",\r\n//     \"special_price\": \"{{special_price}}\",\r\n//     \"url_key\": \"{{url_key}}\",\r\n//     \"created_at\": \"{{created_at}}\",\r\n//     \"updated_at\": \"{{updated_at}}\",\r\n//     \"new_from_date\": \"{{new_from_date}}\",\r\n//     \"new_to_date\": \"{{new_to_date}}\",\r\n//     \"display_product_options_in\": \"{{display_product_options_in}}\",\r\n//     \"map_price\": \"{{map_price}}\",\r\n//     \"msrp_price\": \"{{msrp_price}}\",\r\n//     \"map_enabled\": \"{{map_enabled}}\",\r\n//     \"gift_message_available\": \"{{gift_message_available}}\",\r\n//     \"msrp_display_actual_price_type\": \"{{msrp_display_actual_price_type}}\",\r\n//     \"country_of_manufacture\": \"{{country_of_manufacture}}\",\r\n//     \"additional_attributes\": \"{{additional_attributes}}\",\r\n//     \"qty\": \"{{qty}}\",\r\n//     \"out_of_stock_qty\": \"{{out_of_stock_qty}}\",\r\n//     \"max_cart_qty\": \"{{max_cart_qty}}\",\r\n//     \"additional_images\": \"{{additional_images}}\",\r\n//     \"additional_image_labels\": \"{{additional_image_labels}}\",\r\n// }\r\n\r\n{\r\n    \"sku\": \"ABC123\",\r\n    \"store_view_code\": \"default\",\r\n    \"attribute_set_code\": \"Default\",\r\n    \"product_type\": \"configurable\",\r\n    \"categories\": \"Electronics, Laptops\",\r\n    \"product_websites\": \"Main Website\",\r\n    \"name\": \"High-End Gaming Laptop\",\r\n    \"product_online\": \"1\",\r\n    \"tax_class_name\": \"Taxable Goods\",\r\n    \"visibility\": \"Catalog, Search\",\r\n    \"price\": \"1500.00\",\r\n    \"special_price\": \"1299.99\",\r\n    \"url_key\": \"high-end-gaming-laptop\",\r\n    \"created_at\": \"2024-08-01 10:30:00\",\r\n    \"updated_at\": \"2024-08-15 14:00:00\",\r\n    \"new_from_date\": \"2024-08-01\",\r\n    \"new_to_date\": \"2024-08-31\",\r\n    \"display_product_options_in\": \"Block after Info Column\",\r\n    \"map_price\": \"1400.00\",\r\n    \"msrp_price\": \"1600.00\",\r\n    \"map_enabled\": \"1\",\r\n    \"gift_message_available\": \"Yes\",\r\n    \"msrp_display_actual_price_type\": \"On Gesture\",\r\n    \"country_of_manufacture\": \"USA\",\r\n    \"additional_attributes\": \"color:Black;memory:16GB\",\r\n    \"qty\": \"50\",\r\n    \"out_of_stock_qty\": \"False\",\r\n    \"max_cart_qty\": \"5\",\r\n    \"additional_images\": \"image1.jpg,image2.jpg\",\r\n    \"additional_image_labels\": \"Front View,Side View\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://curl-nation-248dbd3f7186.herokuapp.com/magentoData/api/products",
+					"protocol": "https",
+					"host": [
+						"curl-nation-248dbd3f7186",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"magentoData",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

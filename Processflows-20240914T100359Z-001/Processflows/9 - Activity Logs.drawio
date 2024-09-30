@@ -1,0 +1,54 @@
+<mxfile host="65bd71144e">
+    <diagram name="Page-1" id="e995MOHbL0IESGSoAM8X">
+        <mxGraphModel dx="771" dy="448" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="gHsuMaxAopMQ4zX2Gc7s-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="gHsuMaxAopMQ4zX2Gc7s-27" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="80" y="260"/>
+                        </Array>
+                        <mxPoint x="80" y="440" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="gHsuMaxAopMQ4zX2Gc7s-27" value="Search &amp;amp; Filters" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="205" y="230" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="ua_1dxfY7aL44-bu9Okl-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="gHsuMaxAopMQ4zX2Gc7s-32" target="ua_1dxfY7aL44-bu9Okl-21" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="gHsuMaxAopMQ4zX2Gc7s-32" value="Activity Logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;fontColor=#0d0d0d;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="440" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="ua_1dxfY7aL44-bu9Okl-21" value="Table Fields" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="400" width="280" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="ua_1dxfY7aL44-bu9Okl-22" value="Timestamp" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="ua_1dxfY7aL44-bu9Okl-21" vertex="1">
+                    <mxGeometry y="30" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="ua_1dxfY7aL44-bu9Okl-23" value="Username" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="ua_1dxfY7aL44-bu9Okl-21" vertex="1">
+                    <mxGeometry y="60" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="ua_1dxfY7aL44-bu9Okl-24" value="Employee Name" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="ua_1dxfY7aL44-bu9Okl-21" vertex="1">
+                    <mxGeometry y="90" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="ua_1dxfY7aL44-bu9Okl-25" value="Module Name" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="ua_1dxfY7aL44-bu9Okl-21" vertex="1">
+                    <mxGeometry y="120" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="ua_1dxfY7aL44-bu9Okl-26" value="Activity Type - Create/Update/Delete" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="ua_1dxfY7aL44-bu9Okl-21" vertex="1">
+                    <mxGeometry y="150" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="ua_1dxfY7aL44-bu9Okl-28" value="Employee Role" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="ua_1dxfY7aL44-bu9Okl-21" vertex="1">
+                    <mxGeometry y="180" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="ua_1dxfY7aL44-bu9Okl-29" value="Success/Failure" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="ua_1dxfY7aL44-bu9Okl-21" vertex="1">
+                    <mxGeometry y="210" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="eTronTmefSK7XxxcnRYA-1" value="Activity Logs&lt;br&gt;(Visible to Admin only)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="20" width="120" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
